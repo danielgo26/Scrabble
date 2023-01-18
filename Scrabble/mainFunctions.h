@@ -26,3 +26,5 @@ void PrintRandomLetters(char* letters, int length);
 bool CheckIsWordValid(char* allowedLetters, std :: string userWord);
 bool Contains(char letter, char* letters, int length);
 int GetLength(std :: string str);
+int GetLength(int number);
+void PrintGameInterface(int score, int currRound, char* randomLetters);

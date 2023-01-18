@@ -132,6 +132,14 @@ int GetColorIndexFromText(string colorName)
 	{
 		return 11;
 	}
+	else if (colorName.compare("lightBlue") == 0)
+	{
+		return 11;
+	}
+	else if (colorName.compare("lightYellow") == 0)
+	{
+		return 14;
+	}
 	return 7;
 }
 
@@ -146,7 +154,7 @@ void GetUserInput(char userInputIndex)
 	case '2':
 		OpenSettings();
 		break;
-	case '3':		
+	case '3':
 		EnterNewWord();
 		break;
 	case '4':
@@ -160,21 +168,10 @@ void GetUserInput(char userInputIndex)
 void StartScrabble()
 {
 	currRound++;
-	Clear();
-	PrintLineWithSymbol('*',10);
-	Print("Scrabble");
-	PrintLineWithSymbol('*',10);
-	PrintNewLine();
-	Print("Round: ");
-	Print(currRound);
-	Print("/");
-	Print(roundsCount);
-	PrintNewLine();
 	char* randomLetters = GetRandomLetters(randomGeneratedLettersCount);
-	PrintRandomLetters(randomLetters, randomGeneratedLettersCount);
-	PrintNewLine();
-	Print("Enter your word: ");
+	PrintGameInterface(totalPoints, currRound, randomLetters);
 	string userWord = "";
+	SetColor("lightYellow");
 	cin >> userWord;
 	if (CheckIsWordValid(randomLetters, userWord))
 	{
@@ -182,7 +179,7 @@ void StartScrabble()
 		SetColor("green");
 		Print("You found the word!!!");
 		PrintNewLine();
-		PrintExitMessage("Can you do it one more time? Just a second", 5, "yellowWhite");
+		PrintExitMessage("Can you do it one more time? Just a second..", 3, "yellowWhite");
 		totalPoints += GetLength(userWord);
 	}
 	if (currRound < roundsCount)
@@ -191,8 +188,73 @@ void StartScrabble()
 	}
 	else
 	{
-
+		Clear();
+		PrintLineWithSymbol(' ', 20);
+		SetColor("whiteYellow");
+		Print("Game over!");
+		PrintNewLine();
+		PrintLineWithSymbol(' ', 17);
+		SetColor("lightBlue");
+		Print("Your score is: ");
+		Print(totalPoints);
+		PrintLineWithSymbol('\n', 2);
+		PrintLineWithSymbol(' ', 7);
+		PrintExitMessage("Congratulations! Till the next game..", 5, "yellowWhite");
+		Clear();
+		OpenMainPage();
 	}
+}
+
+void PrintGameInterface(int score, int currRound, char* randomLetters)
+{
+	Clear();
+	SetColor("lightBlue");
+	PrintLineWithSymbol('*', 58);
+	PrintNewLine();
+	PrintLineWithSymbol('*', 25);
+	SetColor("white");
+	Print("Scrabble");
+	SetColor("lightBlue");
+	PrintLineWithSymbol('*', 25);
+	PrintNewLine();
+	PrintLineWithSymbol('*', 58);
+	SetColor("white");
+	PrintLineWithSymbol('\n', 2);
+	SetColor("lightBlue");
+	PrintLineWithSymbol('*', 16);
+	PrintNewLine();
+	Print("*");
+	SetColor("white");
+	Print("Score: ");
+	SetColor("lightYellow");
+	Print(totalPoints);
+	int scoreLength = GetLength(totalPoints);
+	PrintLineWithSymbol(' ', 7 - scoreLength);
+	SetColor("lightBlue");
+	Print("*");
+	PrintNewLine();
+	SetColor("lightBlue");
+	Print("*");
+	SetColor("white");
+	Print("Round: ");
+	SetColor("lightYellow");
+	Print(currRound);
+	Print("/");
+	Print(roundsCount);
+	int allRoundsLength = GetLength(roundsCount);
+	int currRoundsLength = GetLength(currRound);
+	PrintLineWithSymbol(' ', 6 - (allRoundsLength + currRoundsLength));
+	SetColor("lightBlue");
+	Print("*");
+	PrintNewLine();
+	SetColor("lightBlue");
+	PrintLineWithSymbol('*', 16);
+	PrintLineWithSymbol('\n', 4);
+
+	SetColor("white");
+	PrintRandomLetters(randomLetters, randomGeneratedLettersCount);
+	PrintNewLine();
+	Print("Enter your word: ");
 }
 
 int GetLength(string str)
@@ -204,6 +266,21 @@ int GetLength(string str)
 	}
 	return length;
 }
+
+int GetLength(int number)
+{
+	int length = 0;
+	if (number == 0)
+	{
+		return 1;
+	}
+	while (number > 0)
+	{
+		number /= 10;
+		length++;
+	}
+}
+
 bool Contains(char letter, char* letters, int length)
 {
 	for (int i = 0; i < length; i++)
@@ -229,7 +306,7 @@ bool CheckIsWordValid(char* allowedLetters, string userWord)
 			SetColor("red");
 			Print("You can use only the given diggits!");
 			PrintNewLine();
-			PrintExitMessage("Try harder the next time! The next round is coming", 5, "yellowWhite");
+			PrintExitMessage("Try harder the next time! The next round is coming", 3, "yellowWhite");
 			return false;
 		}
 		index++;
@@ -240,7 +317,7 @@ bool CheckIsWordValid(char* allowedLetters, string userWord)
 		SetColor("red");
 		Print("Your word is not valid!");
 		PrintNewLine();
-		PrintExitMessage("More luck the next time! The next round is coming", 5, "yellowWhite");
+		PrintExitMessage("More luck the next time! The next round is coming", 3, "yellowWhite");
 		return false;
 	}
 	return true;
@@ -266,7 +343,7 @@ void PrintRandomLetters(char* letters, int length)
 	{
 		SetColor("yellowWhite");
 		Print(letters[i]);
-		if (i != length-1)
+		if (i != length - 1)
 		{
 			SetColor("white");
 			Print(" | ");
@@ -277,7 +354,7 @@ void PrintRandomLetters(char* letters, int length)
 
 void OpenSettings()
 {
-
+	Print("");
 }
 
 bool CheckWordIsValid(string word)
@@ -286,7 +363,7 @@ bool CheckWordIsValid(string word)
 	while (word[index] != '\0')
 	{
 		char currDigit = word[index];
-		if (!((currDigit >='a' && currDigit <= 'z') || (currDigit >= 'A' && currDigit <= 'Z')))
+		if (!((currDigit >= 'a' && currDigit <= 'z') || (currDigit >= 'A' && currDigit <= 'Z')))
 		{
 			return false;
 		}
@@ -301,7 +378,9 @@ void EnterNewWord()
 	PrintNewLine();
 	Print("Enter a word to be added: ");
 	string newWord = "";
+	SetColor("lightYellow");
 	cin >> newWord;
+	SetColor("white");
 	if (!CheckWordIsValid(newWord))
 	{
 		Clear();
@@ -421,7 +500,7 @@ bool CheckIfDictionaryContainsWord(string newWord)
 	ToUpper(newWord);
 	char newWordFirstDigit = newWord[0];
 	while (!my_file.eof())
-	{	
+	{
 		getline(my_file, currWord);
 		currWordFirstDigit = currWord[0];
 		if (currWordFirstDigit == newWordFirstDigit)

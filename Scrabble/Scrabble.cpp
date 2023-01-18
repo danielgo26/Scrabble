@@ -30,10 +30,11 @@ void OpenMainPage()
 {
 	Clear();
 	PrintMainMenu();
-	char userInputIndex;
+	string userInputIndex;
 	Print("Choose index: ");
 	cin >> userInputIndex;
-	while (userInputIndex != '1' && userInputIndex != '2' && userInputIndex != '3' && userInputIndex != '4')
+	while (userInputIndex.compare("1") != 0 && userInputIndex.compare("2") != 0 
+		&& userInputIndex.compare("3") != 0 && userInputIndex.compare("4") != 0)
 	{
 		Clear();
 		SetColor("red");
@@ -54,6 +55,7 @@ void Clear()
 
 void PrintMainMenu()
 {
+	SetColor("white");
 	PrintLineWithSymbol('*', 7);
 	Print("-Menu-");
 	PrintLineWithSymbol('*', 7);
@@ -143,25 +145,26 @@ int GetColorIndexFromText(string colorName)
 	return 7;
 }
 
-void GetUserInput(char userInputIndex)
+void GetUserInput(string userInputIndex)
 {
 	Clear();
-	switch (userInputIndex)
+	if (userInputIndex.compare("1") == 0)
 	{
-	case '1':
+		currRound = 0;
+		totalPoints = 0;
 		StartScrabble();
-		break;
-	case '2':
+	}
+	else if (userInputIndex.compare("2") == 0)
+	{
 		OpenSettings();
-		break;
-	case '3':
+	}
+	else if (userInputIndex.compare("3") == 0)
+	{
 		EnterNewWord();
-		break;
-	case '4':
+	}
+	else if (userInputIndex.compare("4") == 0)
+	{
 		Close();
-		break;
-	default:
-		break;
 	}
 }
 
@@ -173,6 +176,15 @@ void StartScrabble()
 	string userWord = "";
 	SetColor("lightYellow");
 	cin >> userWord;
+	if (userWord.compare("@exit") == 0)
+	{
+		currRound = 0;
+		totalPoints = 0;
+		Clear();
+		PrintExitMessage("Going back to main menu..", 5, "yellowWhite");
+		Clear();
+		OpenMainPage();
+	}
 	if (CheckIsWordValid(randomLetters, userWord))
 	{
 		Clear();
@@ -249,7 +261,11 @@ void PrintGameInterface(int score, int currRound, char* randomLetters)
 	PrintNewLine();
 	SetColor("lightBlue");
 	PrintLineWithSymbol('*', 16);
-	PrintLineWithSymbol('\n', 4);
+	PrintLineWithSymbol('\n', 2);
+
+	SetColor("lightYellow");
+	Print("For exit -> type \"@exit\"");
+	PrintLineWithSymbol('\n', 2);
 
 	SetColor("white");
 	PrintRandomLetters(randomLetters, randomGeneratedLettersCount);
@@ -354,7 +370,177 @@ void PrintRandomLetters(char* letters, int length)
 
 void OpenSettings()
 {
-	Print("");
+	PrintSettingsInterface();
+	string userIndex;
+	Print("Choose index: ");
+	cin >> userIndex;
+	if (userIndex.compare("1") != 0 && userIndex.compare("2") != 0)
+	{
+		Clear();
+		SetColor("red");
+		Print("Choose a valid number!");
+		PrintNewLine();
+		SetColor("white");
+		OpenSettings();
+	}
+	else
+	{
+		if (userIndex.compare("1") == 0)
+		{
+			Clear();
+			OpenChangeRoundsMenu();
+		}
+		else
+		{
+			Clear();
+			OpenChangeLettersMenu();
+		}
+	}
+}
+
+void OpenChangeRoundsMenu()
+{
+	Print("Here you can change the rounds of the game (1 - 100)");
+	PrintNewLine();
+	Print("Now the count of the rounds is: ");
+	SetColor("lightYellow");
+	Print(roundsCount);
+	SetColor("white");
+	PrintLineWithSymbol('\n', 2);
+	Print("Enter the new number of rounds: ");
+	string newRoundsCount;
+	SetColor("lightYellow");
+	cin >> newRoundsCount;
+	SetColor("white");
+	int numberFromInput = 0;
+	if (IsValidNumber(newRoundsCount))
+	{
+		numberFromInput = ConvertToInt(newRoundsCount);
+	}
+	else
+	{
+		Clear();
+		SetColor("red");
+		Print("Enter valid number from 1 to 100!");
+		SetColor("white");
+		PrintNewLine();
+		OpenChangeRoundsMenu();
+	}
+	if (numberFromInput < 1 || numberFromInput >100)
+	{
+		Clear();
+		SetColor("red");
+		Print("Enter valid number from 1 to 100!");
+		SetColor("white");
+		PrintNewLine();
+		OpenChangeRoundsMenu();
+	}
+	else
+	{
+		roundsCount = ConvertToInt(newRoundsCount);
+		Clear();
+		SetColor("green");
+		Print("Successfully changed number of rounds!");
+		SetColor("white");
+		PrintNewLine();
+		PrintExitMessage("Going back to main menu..", 3, "lightBlue");
+		Clear();
+		OpenMainPage();
+	}
+}
+
+void OpenChangeLettersMenu()
+{
+	Print("Here you can change the count of letters to choose from (1 - 26)");
+	PrintNewLine();
+	Print("Now the count of letters is: ");
+	SetColor("lightYellow");
+	Print(randomGeneratedLettersCount);
+	SetColor("white");
+	PrintLineWithSymbol('\n', 2);
+	Print("Enter the new number of letters: ");
+	string newLettersCount;
+	SetColor("lightYellow");
+	cin >> newLettersCount;
+	SetColor("white");
+	int numberFromInput = 0;
+	if (IsValidNumber(newLettersCount))
+	{
+		numberFromInput = ConvertToInt(newLettersCount);
+	}
+	else
+	{
+		Clear();
+		SetColor("red");
+		Print("Enter valid number from 1 to 26!");
+		SetColor("white");
+		PrintNewLine();
+		OpenChangeLettersMenu();
+	}
+	if (numberFromInput < 1 || numberFromInput >26)
+	{
+		Clear();
+		SetColor("red");
+		Print("Enter valid number from 1 to 26!");
+		SetColor("white");
+		PrintNewLine();
+		OpenChangeLettersMenu();
+	}
+	else
+	{
+		randomGeneratedLettersCount = numberFromInput;
+		Clear();
+		SetColor("green");
+		Print("Successfully changed number of letters!");
+		SetColor("white");
+		PrintNewLine();
+		PrintExitMessage("Going back to main menu..", 3, "lightBlue");
+		Clear();
+		OpenMainPage();
+	}
+}
+
+bool IsValidNumber(string str)
+{
+	int index = 0;
+	while (str[index] != '\0')
+	{
+		if (str[index] < '0' || str[index] > '9')
+		{
+			return false;
+		}
+		index++;
+	}
+	return true;
+}
+
+int ConvertToInt(string str)
+{
+	int number = 0;
+	int index = 0;
+	while (str[index] != '\0')
+	{
+		char currChar = str[index];
+		number = number * 10 + (currChar - '0');
+
+		index++;
+	}
+	return number;
+}
+
+void PrintSettingsInterface()
+{
+	SetColor("white");
+	PrintLineWithSymbol('*', 10);
+	Print("-SettingsMenu-");
+	PrintLineWithSymbol('*', 10);
+	PrintNewLine();
+	Print("1. Change count of rounds");
+	PrintNewLine();
+	Print("2. Change count of given digits");
+	PrintNewLine();
+	PrintLineWithSymbol('*', 34);
+	PrintNewLine();
 }
 
 bool CheckWordIsValid(string word)

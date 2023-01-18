@@ -13,6 +13,7 @@ using namespace std;
 int randomGeneratedLettersCount = 10;
 int roundsCount = 10;
 int currRound = 0;
+int totalPoints = 0;
 int main()
 {
 	StartGame();
@@ -175,12 +176,34 @@ void StartScrabble()
 	Print("Enter your word: ");
 	string userWord = "";
 	cin >> userWord;
+	if (CheckIsWordValid(randomLetters, userWord))
+	{
+		Clear();
+		SetColor("green");
+		Print("You found the word!!!");
+		PrintNewLine();
+		PrintExitMessage("Can you do it one more time? Just a second", 5, "yellowWhite");
+		totalPoints += GetLength(userWord);
+	}
 	if (currRound < roundsCount)
 	{
 		StartScrabble();
 	}
+	else
+	{
+
+	}
 }
 
+int GetLength(string str)
+{
+	int length = 0;
+	while (str[length] != '\0')
+	{
+		length++;
+	}
+	return length;
+}
 bool Contains(char letter, char* letters, int length)
 {
 	for (int i = 0; i < length; i++)
@@ -205,16 +228,22 @@ bool CheckIsWordValid(char* allowedLetters, string userWord)
 			Clear();
 			SetColor("red");
 			Print("You can use only the given diggits!");
-			PrintExitMessage("Try harder the next time! Next round is coming", 5, "yellowWhite");
+			PrintNewLine();
+			PrintExitMessage("Try harder the next time! The next round is coming", 5, "yellowWhite");
 			return false;
 		}
 		index++;
 	}
-	if (CheckIfDictionaryContainsWord(userWord))
+	if (!CheckIfDictionaryContainsWord(userWord))
 	{
-		return true;
+		Clear();
+		SetColor("red");
+		Print("Your word is not valid!");
+		PrintNewLine();
+		PrintExitMessage("More luck the next time! The next round is coming", 5, "yellowWhite");
+		return false;
 	}
-	return false;
+	return true;
 
 }
 

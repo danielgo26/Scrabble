@@ -25,3 +25,4 @@ char* GetRandomLetters(int countDigits);
 void PrintRandomLetters(char* letters, int length);
 bool CheckIsWordValid(char* allowedLetters, std :: string userWord);
 bool Contains(char letter, char* letters, int length);
+int GetLength(std :: string str);

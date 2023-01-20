@@ -1,3 +1,17 @@
+/**
+*
+* Solution to course project Scrabble
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2022/2023
+*
+* @author Daniel Yordanov
+* @idnumber 3MI0600149
+* @compiler Visual Studio Compiler
+*
+* <предназначение на файла>
+*
+*/
 #include <iostream>
 #include "mainFunctions.h"
 #include <windows.h>
